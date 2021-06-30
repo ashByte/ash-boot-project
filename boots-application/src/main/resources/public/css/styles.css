@@ -1,0 +1,8 @@
+.boots-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.boot-form-entry {
+  display: flex
+}
