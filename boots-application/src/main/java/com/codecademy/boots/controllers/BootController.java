@@ -42,12 +42,53 @@ public class BootController {
 		return Arrays.asList(BootType.values());
 	}
 
+	@PostMapping("/")
+	public Boot addBoot(@RequestBody Boot boot) {
+		Boot newBoot = this.bootRepository.save(boot);
+		return newBoot;
+	}
+	
+	@DeleteMapping("/{id}")
+	public Boot deleteBoot(@PathVariable("id") Integer id) {
+		Optional<Boot> bootToDeleteOptional = this.bootRepository.findById(id);
+		if (!bootToDeleteOptional.isPresent()) {
+			return null;
+		}
+		Boot bootToDelete = bootToDeleteOptional.get();
+		this.bootRepository.delete(bootToDelete);
+		return bootToDelete;
+	}
+
+	@PutMapping("/{id}/quantity/increment")
+	public Boot incrementQuantity(@PathVariable("id") Integer id) {
+		Optional<Boot> bootToIncrementOptional = this.bootRepository.findById(id);
+		if (!bootToIncrementOptional.isPresent()) {
+			return null;
+		}
+		Boot bootToIncrement = bootToIncrementOptional.get();
+		bootToIncrement.setQuantity(bootToIncrement.getQuantity() + 1);
+		this.bootRepository.save(bootToIncrement);
+		return bootToIncrement;
+	}
+
+	@PutMapping("/{id}/quantity/decrement")
+	public Boot decrementQuantity(@PathVariable("id") Integer id) {
+		Optional<Boot> bootToDecrementOptional = this.bootRepository.findById(id);
+		if (!bootToDecrementOptional.isPresent()) {
+			return null;
+		}
+		Boot bootToDecrement = bootToDecrementOptional.get();
+		bootToDecrement.setQuantity(bootToDecrement.getQuantity() - 1);
+		this.bootRepository.save(bootToDecrement);
+		return bootToDecrement;
+	}
+
 	@GetMapping("/search")
 	public List<Boot> searchBoots(
 		@RequestParam(required = false) String material,
 		@RequestParam(required = false) BootType type,
 		@RequestParam(required = false) Float size,
-		@RequestParam(required = false) Integer minQuantity
+		@RequestParam(required = false, name="quantity") Integer minQuantity
 	) throws QueryNotSupportedException {
 		if (Objects.nonNull(material)) {
 			if (Objects.nonNull(type) && Objects.nonNull(size) && Objects.nonNull(minQuantity)) {

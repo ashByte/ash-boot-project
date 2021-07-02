@@ -25,18 +25,85 @@ const fetchBootTypes = (cb) => {
 
 /**
  * searches boots by different parameters
- * @param {BootQuery} bootQuery query object for filter criteria
  * @param {(Boot[]) => void} cb function to render boot search results
  */
-const searchBoots = (bootQuery, cb) => {
+const searchBoots = (cb) => {
+  const searchBootForm = document.getElementById("searchBoots").elements;
+  const material = searchBootForm["material"].value;
+  const type = searchBootForm["type"].value;
+  const size = parseFloat(searchBootForm["size"].value);
+  const quantity = parseInt(searchBootForm["quantity"].value);
+
+  const bootQuery = {
+    material,
+    type,
+    size,
+    quantity
+  }
   const queryString = Object.keys(bootQuery)
+    .filter(k => bootQuery[k])
     .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(bootQuery[key])}`)
     .join('&');
 
   fetch(`/api/v1/boots/search?${queryString}`)
     .then(res => res.json())
-    .then(json => cb(json))
+    .then(json => {
+      console.log(json)
+      cb(json)
+    })
     .catch(renderError);
+}
+
+const deleteBootById = (bootId, cb) => {
+  fetch(`/api/v1/boots/${bootId}`, {
+    method: "DELETE"
+  })
+    .then(res => res.json())
+    .then(json => {
+      alert(`Deleted Boot ${json.id} from the database (${JSON.stringify(json)}).`);
+      fetchAllBoots(cb);
+    })
+    .catch(renderError);
+}
+
+const addNewBoot = (cb) => {
+  const addBootForm = document.getElementById("addNewBoot").elements;
+  const material = addBootForm["material"].value;
+  const type = addBootForm["type"].value;
+  const size = parseFloat(addBootForm["size"].value);
+  const quantity = parseInt(addBootForm["quantity"].value);
+  const boot = {
+    material,
+    type,
+    size,
+    quantity
+  }
+  console.log(boot);
+  fetch(`/api/v1/boots/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(boot)
+  })
+    .then(res => res.json())
+    .then(json => {
+      alert(`Successfully added boot with id ${json.id}: (${JSON.stringify(json)})`);
+      fetchAllBoots(cb);
+    })
+}
+
+
+const changeBootQuantity = (bootId, action, cb) => {
+  fetch(`/api/v1/boots/${bootId}/quantity/${action}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+    .then(res => res.json())
+    .then(json => {
+      alert(`Updated boot: ${JSON.stringify(json)}`)
+      fetchAllBoots(cb);
+    })
 }
 
 // RENDERING FUNCTIONS
@@ -67,6 +134,11 @@ const renderBootsListCallback = (bootsTableBody) => (boots) => {
       <td>${boot.material}</td>
       <td>${boot.size}</td>
       <td>${boot.quantity}</td>
+      <td>
+        <span class="delete-boot-icon" onclick="deleteBootById(${boot.id}, renderBootsListCallback(document.getElementById('bootsTableBody')));">❌</span>
+        <span class="increment-boot-icon" onclick="changeBootQuantity(${boot.id}, 'increment', renderBootsListCallback(document.getElementById('bootsTableBody')));">⬆️</span>
+        <span class="decrement-boot-icon" onclick="changeBootQuantity(${boot.id}, 'decrement', renderBootsListCallback(document.getElementById('bootsTableBody')));">⬇️</span>
+      </td>
     `;
     bootsTableBody.appendChild(bootsRow);
   });
@@ -74,16 +146,18 @@ const renderBootsListCallback = (bootsTableBody) => (boots) => {
 
 /**
  * renders boot types into dropdown options
- * @param {Element} bootTypesSelect DOM element to render options into
+ * @param {Element[]} bootTypesSelects DOM elements to render options into
  * @param {String[]} bootTypes array of different boot types
  */
-const renderBootTypesOptionsCallback = (bootTypesSelect) => (bootTypes) => {
-  bootTypes.forEach(bootType => {
-    const bootTypeOption = document.createElement("option");
-    bootTypeOption.setAttribute("value", bootType);
-    bootTypeOption.innerHTML = bootType;
-    bootTypesSelect.appendChild(bootTypeOption);
-  });
+const renderBootTypesOptionsCallback = (bootTypesSelects) => (bootTypes) => {
+  for (const bootTypesSelect of bootTypesSelects) {
+    bootTypes.forEach(bootType => {
+      const bootTypeOption = document.createElement("option");
+      bootTypeOption.setAttribute("value", bootType);
+      bootTypeOption.innerHTML = bootType;
+      bootTypesSelect.appendChild(bootTypeOption);
+    });
+  }
 }
 
 // calls to initialize and render data on script load
@@ -95,6 +169,6 @@ fetchAllBoots(
 
 fetchBootTypes(
   renderBootTypesOptionsCallback(
-    document.getElementById("bootTypesDropdown")
+    document.getElementsByClassName("boot-types-dropdown")
   )
 );
