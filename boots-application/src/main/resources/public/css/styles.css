@@ -1,3 +1,7 @@
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
 .boots-form {
   display: flex;
   flex-direction: column;
@@ -5,4 +9,20 @@
 
 .boot-form-entry {
   display: flex
+}
+
+.boots-app-container {
+  /* Add shadows to create the "card" effect */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  padding: 20px 20px;
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.boots-app-container .boots-banner {
+  background-color: #6db340;
+  text-align: center;
+  color: white;
 }
