@@ -1,3 +1,19 @@
+// handlers
+
+/**
+ * handles when backend yields a 500
+ * @param {Object} json JSON response from backend
+ * @returns original JSON if status was not 500
+ * @throws error if status was 500
+ */
+const handle500Error = (json) => {
+  if (json.status && json.status === 500) {
+    throw new Error(json.message)
+  }
+  return json
+}
+
+
 // API CALLS
 /**
  * fetches all boots from the backend
@@ -7,6 +23,7 @@
 const fetchAllBoots = (cb) => {
   fetch("/api/v1/boots/")
     .then(res => res.json())
+    .then(handle500Error)
     .then(json => cb(json))
     .catch(renderError);
 }
@@ -19,6 +36,7 @@ const fetchAllBoots = (cb) => {
 const fetchBootTypes = (cb) => {
   fetch("/api/v1/boots/types/")
     .then(res => res.json())
+    .then(handle500Error)
     .then(json => cb(json))
     .catch(renderError);
 }
@@ -47,6 +65,7 @@ const searchBoots = (cb) => {
 
   fetch(`/api/v1/boots/search?${queryString}`)
     .then(res => res.json())
+    .then(handle500Error)
     .then(json => {
       console.log(json)
       cb(json)
@@ -59,6 +78,7 @@ const deleteBootById = (bootId, cb) => {
     method: "DELETE"
   })
     .then(res => res.json())
+    .then(handle500Error)
     .then(json => {
       alert(`Deleted Boot ${json.id} from the database (${JSON.stringify(json)}).`);
       fetchAllBoots(cb);
@@ -78,13 +98,13 @@ const addNewBoot = (cb) => {
     size,
     quantity
   }
-  console.log(boot);
   fetch(`/api/v1/boots/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(boot)
   })
     .then(res => res.json())
+    .then(handle500Error)
     .then(json => {
       alert(`Successfully added boot with id ${json.id}: (${JSON.stringify(json)})`);
       fetchAllBoots(cb);
@@ -100,6 +120,7 @@ const changeBootQuantity = (bootId, action, cb) => {
     }
   })
     .then(res => res.json())
+    .then(handle500Error)
     .then(json => {
       alert(`Updated boot: ${JSON.stringify(json)}`)
       fetchAllBoots(cb);
