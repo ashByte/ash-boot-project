@@ -132,6 +132,8 @@ Start with the `getAllBoots` endpoint. Remove the code that throws the `NotImple
 
 Then, add in the required `return` statement so that this method will yield an `Iterable` of all the boots in the database.
 
+We've added some sample data to initialize the database with some boots. To ensure that this sample data is loaded, find the **application.properties** file and change `spring.datasource.initialization-mode=never` to `spring.datasource.initialization-mode=always`.
+
 Validate that this worked by refreshing the UI for the Boots Bootique. You should now see a table with all the boots currently in the database!
 
 **Hint**:
