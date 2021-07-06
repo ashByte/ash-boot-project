@@ -48,7 +48,7 @@ The fields that our `Boot` class requires are:
 Add each of these fields to the `Boot` class, and make them `private`.
 
 **Hint**:
-You'll notice that one of these fields has a type that is not built in to Java! The `BootType` is an **enum**, which is a special kind of class used for when there are only a few different kinds of something and we want the set of values to be constrained. Take a look at **src/main/java/com/codecademy/boots/enums/BootType.java** to see what the `BootType` enum looks like and what the possible values are.
+You'll notice that one of these fields has a type that is not built into Java! The `BootType` is an **enum**, which is a special kind of class used for when there are only a few different kinds of something and we want the set of values to be constrained. Take a look at **src/main/java/com/codecademy/boots/enums/BootType.java** to see what the `BootType` enum looks like and what the possible values are.
 
 #### 3 (add spring data jpa annotations to entity)
 To ensure that Spring Data JPA can associate our `Boot` class with the underlying `"BOOTS"` table, we'll need to add all the required annotations.
@@ -132,7 +132,7 @@ Start with the `getAllBoots` endpoint. Remove the code that throws the `NotImple
 
 Then, add in the required `return` statement so that this method will yield an `Iterable` of all the boots in the database.
 
-Validate that this worked by refreshing the UI for the Boots Boutique. You should now see a table with all the boots currently in the database!
+Validate that this worked by refreshing the UI for the Boots Bootique. You should now see a table with all the boots currently in the database!
 
 **Hint**:
 The method you'll use from the `bootRepository` here is the `findAll()` method.
@@ -180,7 +180,7 @@ public Person deletePerson(@PathVariable("id") Integer id) {
 }
 ```
 
-Working with `Optional`'s can be tricky, but they make error handling very easy to do.
+Working with `Optional`'s can be tricky, but they make error handling a lot easier.
 
 #### 9 (add increment functionality into BootController, test with increment button)
 The next action to implement for an entry in the boot inventory is the ability to increment the quantity of the boot.
