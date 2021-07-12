@@ -6,7 +6,7 @@
 		<groupId>com.codecademy</groupId>
 		<artifactId>ein-spring</artifactId>
 		<version>0.0.1</version>
-		<relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
+		<relativePath>../../pom.xml</relativePath> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.codecademy</groupId>
 	<artifactId>boots</artifactId>
