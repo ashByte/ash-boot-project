@@ -109,6 +109,7 @@ const addNewBoot = (cb) => {
       alert(`Successfully added boot with id ${json.id}: (${JSON.stringify(json)})`);
       fetchAllBoots(cb);
     })
+    .catch(renderError);
 }
 
 
@@ -125,6 +126,7 @@ const changeBootQuantity = (bootId, action, cb) => {
       alert(`Updated boot: ${JSON.stringify(json)}`)
       fetchAllBoots(cb);
     })
+    .catch(renderError);
 }
 
 // RENDERING FUNCTIONS

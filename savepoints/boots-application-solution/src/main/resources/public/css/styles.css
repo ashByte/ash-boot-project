@@ -46,8 +46,13 @@ body {
   text-align: center;
   text-decoration: none;
   display: inline-block;
+  cursor: pointer;
 }
 
 .boots-app-container .boots-table {
   width: 100%;
+}
+
+.boots-app-container .boots-table .action-button {
+  cursor: pointer;
 }

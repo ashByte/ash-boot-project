@@ -109,6 +109,7 @@ const addNewBoot = (cb) => {
       alert(`Successfully added boot with id ${json.id}: (${JSON.stringify(json)})`);
       fetchAllBoots(cb);
     })
+    .catch(renderError);
 }
 
 
@@ -125,6 +126,7 @@ const changeBootQuantity = (bootId, action, cb) => {
       alert(`Updated boot: ${JSON.stringify(json)}`)
       fetchAllBoots(cb);
     })
+    .catch(renderError);
 }
 
 // RENDERING FUNCTIONS
@@ -156,9 +158,9 @@ const renderBootsListCallback = (bootsTableBody) => (boots) => {
       <td>${boot.size}</td>
       <td>${boot.quantity}</td>
       <td>
-        <span class="delete-boot-icon" onclick="deleteBootById(${boot.id}, renderBootsListCallback(document.getElementById('bootsTableBody')));">❌</span>
-        <span class="increment-boot-icon" onclick="changeBootQuantity(${boot.id}, 'increment', renderBootsListCallback(document.getElementById('bootsTableBody')));">⬆️</span>
-        <span class="decrement-boot-icon" onclick="changeBootQuantity(${boot.id}, 'decrement', renderBootsListCallback(document.getElementById('bootsTableBody')));">⬇️</span>
+        <span class="action-button delete-boot-icon" onclick="deleteBootById(${boot.id}, renderBootsListCallback(document.getElementById('bootsTableBody')));">❌</span>
+        <span class="action-button increment-boot-icon" onclick="changeBootQuantity(${boot.id}, 'increment', renderBootsListCallback(document.getElementById('bootsTableBody')));">⬆️</span>
+        <span class="action-button decrement-boot-icon" onclick="changeBootQuantity(${boot.id}, 'decrement', renderBootsListCallback(document.getElementById('bootsTableBody')));">⬇️</span>
       </td>
     `;
     bootsTableBody.appendChild(bootsRow);
