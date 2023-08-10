@@ -14,11 +14,12 @@ import com.codecademy.boots.enums.BootType;
 @Entity
 @Table (name="BOOTPURCHASE")
 public class BootPurchase {
-    @Column(name="TYPE")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name="TYPE")
-    @Enumerated(EnumType.String)
+    @Enumerated(EnumType.STRING)
     private BootType type;
 
     @Column(name="SIZE")
@@ -71,7 +72,7 @@ public class BootPurchase {
     public Boolean getIsBestseller() {
         return this.isBestseller;
     }
-    public void setIsBestseller(String material) {
+    public void setIsBestseller(Boolean isBestseller) {
         this.isBestseller = isBestseller;
     }
 

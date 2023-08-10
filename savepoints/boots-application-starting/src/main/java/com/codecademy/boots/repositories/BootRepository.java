@@ -22,31 +22,31 @@ public interface BootRepository extends CrudRepository <Boot, Integer> {
     // if you're lost we can go to spring docs -> query creation
 
     // and just like that we can find boots by the size, material, type...
-    List<Boot> findBySize(Float size);
+    public List<Boot> findBySize(Float size);
 
-    List<Boot> findByMaterial(String material);
+    public List<Boot> findByMaterial(String material);
 
-    List<Boot> findByType(BootType type);
+    public List<Boot> findByType(BootType type);
 
-    List<Boot> findByQuantityGreaterThan(Integer minQuantity);
+    public List<Boot> findByQuantityGreaterThan(Integer minQuantity);
 
     // remix of the above
-    List<Boot> findByMaterialAndTypeAndSizeAndQuantityGreaterThan(String material, BootType type, Float size, Integer minQuantity);
+    public List<Boot> findByMaterialAndTypeAndSizeAndQuantityGreaterThan(String material, BootType type, Float size, Integer minQuantity);
     
-    List<Boot> findByMaterialAndSizeAndType(String material, Float size, BootType type);
+    public List<Boot> findByMaterialAndSizeAndType(String material, Float size, BootType type);
 
-    List<Boot> findByMaterialAndTypeAndQuantityGreaterThan(String material, BootType type, Integer minQuantity);
+    public List<Boot> findByMaterialAndTypeAndQuantityGreaterThan(String material, BootType type, Integer minQuantity);
 
-    List<Boot> findByMaterialAndType(String material, BootType type);
+    public List<Boot> findByMaterialAndType(String material, BootType type);
 
-    List<Boot> findByTypeAndSizeAndQuantityGreaterThan(BootType type, Float size, Integer minQuantity);
+    public List<Boot> findByTypeAndSizeAndQuantityGreaterThan(BootType type, Float size, Integer minQuantity);
 
-    List<Boot> findByTypeAndSize(BootType type, Float size);
+    public List<Boot> findByTypeAndSize(BootType type, Float size);
 
-    List<Boot> findByTypeAndQuantityGreaterThan(BootType type, Integer minQuantity);
+    public List<Boot> findByTypeAndQuantityGreaterThan(BootType type, Integer minQuantity);
 
-    List<Boot> findBySizeAndQuantityGreaterThan(Float size, Integer minQuantity);
+    public List<Boot> findBySizeAndQuantityGreaterThan(Float size, Integer minQuantity);
     
-    List<Boot> findByIsBestsellerTrue();
+    public List<Boot> findByIsBestsellerTrue();
 
 }

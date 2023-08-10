@@ -25,7 +25,7 @@ public class Boot {
     // add or delete diff enums w/o breaking the data model
     // unlike ordinal types
     @Column(name="TYPE")
-    @Enumerated(EnumType.String)
+    @Enumerated(EnumType.STRING)
     private BootType type;
 
     @Column(name="SIZE")
@@ -78,7 +78,7 @@ public class Boot {
     public Boolean getIsBestseller() {
         return this.isBestseller;
     }
-    public void setIsBestseller(String material) {
+    public void setIsBestseller(Boolean isBestseller) {
         this.isBestseller = isBestseller;
     }
 

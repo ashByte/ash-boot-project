@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.codecademy.boots.entities.Boot;
+import com.codecademy.boots.entities.BootPurchase;
+import com.codecademy.boots.repositories.BootRepository;
+import com.codecademy.boots.repositories.BootPurchaseRepository;
 import com.codecademy.boots.enums.BootType;
 import com.codecademy.boots.exceptions.QueryNotSupportedException;
 import com.codecademy.boots.exceptions.NotImplementedException;
@@ -26,14 +29,13 @@ import com.codecademy.boots.exceptions.NotImplementedException;
 @RestController
 @RequestMapping("/api/v1/boots")
 public class BootController {
-	private BootRepository bootRepository;
+	private final BootRepository bootRepository;
 	private BootPurchaseRepository bootPurchaseRepository;
 	// we connect our controller to the repository
 	// where the repo will handle all CRUD business 
 	// (findById -> queries for that id, findAll -> fetch all entries, save -> !creates or modifies!, delete)
-	public BootController (final BootRepository BootRepository, final BootPurchaseRepository BootpurchaseRepository) {
+	public BootController (final BootRepository bootRepository) {
 		this.bootRepository = bootRepository;
-		this.bootPurchaseRepository = BootpurchaseRepository;
 	}
 
 	@GetMapping("/")
@@ -55,8 +57,8 @@ public class BootController {
 	@DeleteMapping("/{id}")
 	public Boot deleteBoot(@PathVariable("id") Integer id) {
 		Optional<Boot> maybeBoot = this.bootRepository.findById(id);
-		if(maybeBoot.isPresent) {
-			this.bootRepository.delete(id);
+		if(maybeBoot.isPresent()) {
+			this.bootRepository.delete(maybeBoot.get());
 			return maybeBoot.get();
 		}
 		return null;
@@ -65,7 +67,7 @@ public class BootController {
 	@PutMapping("/{id}/quantity/increment")
 	public Boot incrementQuantity(@PathVariable("id") Integer id) {
 		Optional<Boot> maybeBoot = this.bootRepository.findById(id);
-		if (boot.isEmpty()) return null;
+		if (maybeBoot.isEmpty()) return null;
 		Boot boot = maybeBoot.get();
 		boot.setQuantity(boot.getQuantity() + 1);
 		this.bootRepository.save(boot);
@@ -75,7 +77,7 @@ public class BootController {
 	@PutMapping("/{id}/quantity/decrement")
 	public Boot decrementQuantity(@PathVariable("id") Integer id) {
 		Optional<Boot> maybeBoot = this.bootRepository.findById(id);
-		if (boot.isEmpty()) return null;
+		if (maybeBoot.isEmpty()) return null;
 		Boot boot = maybeBoot.get();
 		boot.setQuantity(boot.getQuantity() - 1);
 		this.bootRepository.save(boot);
@@ -86,7 +88,7 @@ public class BootController {
 	@PutMapping("/{id}/size/changeSize")
 	public Boot changeSize(@PathVariable("id") Integer id,  @RequestParam(required = true) Float size) {
 		Optional<Boot> maybeBoot = this.bootRepository.findById(id);
-		if (boot.isEmpty()) return null;
+		if (maybeBoot.isEmpty()) return null;
 		Boot boot = maybeBoot.get();
 		boot.setSize(size);
 		this.bootRepository.save(boot);
@@ -97,9 +99,9 @@ public class BootController {
 	@PutMapping("/{id}/material/changeMaterial")
 	public Boot changeMaterial(@PathVariable("id") Integer id,  @RequestParam(required = true) String material) {
 		Optional<Boot> maybeBoot = this.bootRepository.findById(id);
-		if (boot.isEmpty()) return null;
+		if (maybeBoot.isEmpty()) return null;
 		Boot boot = maybeBoot.get();
-		boot.setMaterial(BootType.valueOf(material));
+		boot.setMaterial(material);
 		this.bootRepository.save(boot);
 		return boot;
 	}
@@ -108,7 +110,7 @@ public class BootController {
 	@PutMapping("/{id}/isBestseller")
 	public Boot markBestseller(@PathVariable("id") Integer id) {
 		Optional<Boot> maybeBoot = this.bootRepository.findById(id);
-		if (boot.isEmpty()) return null;
+		if (maybeBoot.isEmpty()) return null;
 		Boot boot = maybeBoot.get();
 		boot.setIsBestseller(true);
 		this.bootRepository.save(boot);
@@ -139,7 +141,6 @@ public class BootController {
 		// and mark the first sold quantity
 		if (maybePurchase.isEmpty()) {
 			BootPurchase purchase = new BootPurchase();
-			purchase.setId(id);
 			purchase.setMaterial(boot.getMaterial());
 			purchase.setQuantity(1);
 			purchase.setSize(boot.getSize());
@@ -165,47 +166,47 @@ public class BootController {
 			if (Objects.nonNull(type) && Objects.nonNull(size) && Objects.nonNull(minQuantity)) {
 				// call the repository method that accepts a material, type, size, and minimum
 				// quantity
-				this.bootRepository.findByMaterialAndTypeAndSizeAndQuantityGreaterThan(material, type, size, minQuantity);
+				return this.bootRepository.findByMaterialAndTypeAndSizeAndQuantityGreaterThan(material, type, size, minQuantity);
 			} else if (Objects.nonNull(type) && Objects.nonNull(size)) {
 				// call the repository method that accepts a material, size, and type
-				this.bootRepository.findByMaterialAndSizeAndType(material, size, type);
+				return this.bootRepository.findByMaterialAndSizeAndType(material, size, type);
 			} else if (Objects.nonNull(type) && Objects.nonNull(minQuantity)) {
 				// call the repository method that accepts a material, a type, and a minimum
 				// quantity
-				this.bootRepository.findByMaterialAndTypeAndQuantityGreaterThan(material, type, minQuantity);
+				return this.bootRepository.findByMaterialAndTypeAndQuantityGreaterThan(material, type, minQuantity);
 			} else if (Objects.nonNull(type)) {
 				// call the repository method that accepts a material and a type
-				this.bootRepository.findByMaterialAndType(material, type);
+				return this.bootRepository.findByMaterialAndType(material, type);
 			} else {
 				// call the repository method that accepts only a material
-				this.bootRepository.findByMaterial(material);
+				return this.bootRepository.findByMaterial(material);
 			}
 		} else if (Objects.nonNull(type)) {
 			if (Objects.nonNull(size) && Objects.nonNull(minQuantity)) {
 				// call the repository method that accepts a type, size, and minimum quantity
-				this.bootRepository.findByTypeAndSizeAndQuantityGreaterThan(type, size, minQuantity);
+				return this.bootRepository.findByTypeAndSizeAndQuantityGreaterThan(type, size, minQuantity);
 			} else if (Objects.nonNull(size)) {
 				// call the repository method that accepts a type and a size
-				this.bootRepository.findByTypeAndSize(type, size);
+				return this.bootRepository.findByTypeAndSize(type, size);
 			} else if (Objects.nonNull(minQuantity)) {
 				// call the repository method that accepts a type and a minimum quantity
-				this.bootRepository.findByTypeAndQuantityGreaterThan(type, minQuantity);
+				return this.bootRepository.findByTypeAndQuantityGreaterThan(type, minQuantity);
 			} else {
 				// call the repository method that accept only a type
-				this.bootRepository.findByType(type);
+				return this.bootRepository.findByType(type);
 				
 			}
 		} else if (Objects.nonNull(size)) {
 			if (Objects.nonNull(minQuantity)) {
 				// call the repository method that accepts a size and a minimum quantity
-				this.bootRepository.findBySizeAndQuantityGreaterThan(size, minQuantity);
+				return this.bootRepository.findBySizeAndQuantityGreaterThan(size, minQuantity);
 			} else {
 				// call the repository method that accepts only a size
-				this.bootRepository.findBySize(size);
+				return this.bootRepository.findBySize(size);
 			}
 		} else if (Objects.nonNull(minQuantity)) {
 			// call the repository method that accepts only a minimum quantity
-			this.bootRepository.findByQuantityGreaterThan(minQuantity);
+			return this.bootRepository.findByQuantityGreaterThan(minQuantity);
 		} else {
 			throw new QueryNotSupportedException("This query is not supported! Try a different combination of search parameters.");
 		}
