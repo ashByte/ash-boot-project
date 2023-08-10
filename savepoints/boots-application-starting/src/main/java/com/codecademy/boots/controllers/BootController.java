@@ -27,11 +27,13 @@ import com.codecademy.boots.exceptions.NotImplementedException;
 @RequestMapping("/api/v1/boots")
 public class BootController {
 	private BootRepository bootRepository;
+	private BootPurchaseRepository bootPurchaseRepository;
 	// we connect our controller to the repository
 	// where the repo will handle all CRUD business 
 	// (findById -> queries for that id, findAll -> fetch all entries, save -> !creates or modifies!, delete)
-	public BootController (final BootRepository BootRepository) {
+	public BootController (final BootRepository BootRepository, final BootPurchaseRepository BootpurchaseRepository) {
 		this.bootRepository = bootRepository;
+		this.bootPurchaseRepository = BootpurchaseRepository;
 	}
 
 	@GetMapping("/")
@@ -79,6 +81,81 @@ public class BootController {
 		this.bootRepository.save(boot);
 		return boot;
 	}
+
+	// EC: Change boot size by id
+	@PutMapping("/{id}/size/changeSize")
+	public Boot changeSize(@PathVariable("id") Integer id,  @RequestParam(required = true) Float size) {
+		Optional<Boot> maybeBoot = this.bootRepository.findById(id);
+		if (boot.isEmpty()) return null;
+		Boot boot = maybeBoot.get();
+		boot.setSize(size);
+		this.bootRepository.save(boot);
+		return boot;
+	}
+
+	// EC: Change boot material by id
+	@PutMapping("/{id}/material/changeMaterial")
+	public Boot changeMaterial(@PathVariable("id") Integer id,  @RequestParam(required = true) String material) {
+		Optional<Boot> maybeBoot = this.bootRepository.findById(id);
+		if (boot.isEmpty()) return null;
+		Boot boot = maybeBoot.get();
+		boot.setMaterial(BootType.valueOf(material));
+		this.bootRepository.save(boot);
+		return boot;
+	}
+
+	// EC: Mark boots as best seller
+	@PutMapping("/{id}/isBestseller")
+	public Boot markBestseller(@PathVariable("id") Integer id) {
+		Optional<Boot> maybeBoot = this.bootRepository.findById(id);
+		if (boot.isEmpty()) return null;
+		Boot boot = maybeBoot.get();
+		boot.setIsBestseller(true);
+		this.bootRepository.save(boot);
+		return boot;
+	}
+
+	// EC: Get all boots that are marked as best seller
+	@GetMapping("/isBestseller")
+	public Iterable<Boot> getAllBestsellers() {
+		return this.bootRepository.findByIsBestsellerTrue();
+	}
+
+
+	// EC: add boot purchase
+	@PostMapping("/{id}/purchase")
+	public Boot purchaseBoot(@PathVariable("id") Integer id) {
+		// try to see if the boot that we're trying to purchase is available
+		Optional<Boot> maybeBoot = this.bootRepository.findById(id);
+		if (maybeBoot.isEmpty() || maybeBoot.get().getQuantity() < 1) return null;
+		Boot boot = maybeBoot.get();
+		// mark the boot as sold
+		boot.setQuantity(boot.getQuantity() - 1);
+		this.bootRepository.save(boot);
+
+		// see if we already have the boot purchase record
+		Optional<BootPurchase> maybePurchase = this.bootPurchaseRepository.findById(id);
+		// if not go ahead and insert a new boot
+		// and mark the first sold quantity
+		if (maybePurchase.isEmpty()) {
+			BootPurchase purchase = new BootPurchase();
+			purchase.setId(id);
+			purchase.setMaterial(boot.getMaterial());
+			purchase.setQuantity(1);
+			purchase.setSize(boot.getSize());
+			purchase.setType(boot.getType());
+			purchase.setIsBestseller(boot.getIsBestseller());
+			this.bootPurchaseRepository.save(purchase);
+		} else {
+			// update how many we sold of that boot
+			BootPurchase purchase = maybePurchase.get();
+			purchase.setQuantity(purchase.getQuantity() + 1);
+			this.bootPurchaseRepository.save(purchase);
+		}
+		
+		return boot;
+	}
+
 
 	@GetMapping("/search")
 	public List<Boot> searchBoots(@RequestParam(required = false) String material,

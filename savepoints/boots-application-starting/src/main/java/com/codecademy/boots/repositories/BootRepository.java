@@ -46,5 +46,7 @@ public interface BootRepository extends CrudRepository <Boot, Integer> {
     List<Boot> findByTypeAndQuantityGreaterThan(BootType type, Integer minQuantity);
 
     List<Boot> findBySizeAndQuantityGreaterThan(Float size, Integer minQuantity);
+    
+    List<Boot> findByIsBestsellerTrue();
 
 }
