@@ -30,12 +30,13 @@ import com.codecademy.boots.exceptions.NotImplementedException;
 @RequestMapping("/api/v1/boots")
 public class BootController {
 	private final BootRepository bootRepository;
-	private BootPurchaseRepository bootPurchaseRepository;
+	private final BootPurchaseRepository bootPurchaseRepository;
 	// we connect our controller to the repository
 	// where the repo will handle all CRUD business 
 	// (findById -> queries for that id, findAll -> fetch all entries, save -> !creates or modifies!, delete)
-	public BootController (final BootRepository bootRepository) {
+	public BootController (final BootRepository bootRepository, final BootPurchaseRepository bootPurchaseRepository) {
 		this.bootRepository = bootRepository;
+		this.bootPurchaseRepository = bootPurchaseRepository;
 	}
 
 	@GetMapping("/")

@@ -28,6 +28,7 @@
               <th>SIZE</th>
               <th>QUANTITY</th>
               <th>ACTIONS</th>
+              <th>IS_BESTSELLER</th>
             </tr>
           </thead>
           <tbody id="bootsTableBody">
@@ -58,6 +59,11 @@
             <input type="number" id="quantity" name="quantity" min="0" step="1">
           </div>
 
+          <div class="boot-form-entry">
+            <label for="isBestseller">Is Bestseller</label>
+            <select name="isBestseller" id="isBestseller" form="addNewBoot"></select>
+          </div>
+          
           <button type="button" id="addNewBootSubmit" onclick="addNewBoot(renderBootsListCallback(document.getElementById('bootsTableBody')));">Add</button>
         </form>
       </div>

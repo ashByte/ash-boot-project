@@ -157,6 +157,7 @@ const renderBootsListCallback = (bootsTableBody) => (boots) => {
       <td>${boot.material}</td>
       <td>${boot.size}</td>
       <td>${boot.quantity}</td>
+      <td>${boot.isBestseller}</td>
       <td>
         <span class="delete-boot-icon" onclick="deleteBootById(${boot.id}, renderBootsListCallback(document.getElementById('bootsTableBody')));">❌</span>
         <span class="increment-boot-icon" onclick="changeBootQuantity(${boot.id}, 'increment', renderBootsListCallback(document.getElementById('bootsTableBody')));">⬆️</span>
